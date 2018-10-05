@@ -121,7 +121,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Lista de Compras" id="I3j-FA-rHY">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="XCO-aV-X8y"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="XCO-aV-X8y">
+                            <connections>
+                                <action selector="addItem:" destination="TeR-KQ-ktG" id="lyw-0F-aih"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                 </tableViewController>

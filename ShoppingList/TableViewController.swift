@@ -24,6 +24,7 @@ class TableViewController: UITableViewController {
     
     var firestoreListener: ListenerRegistration!
     let shoppingListCollection = "shoppingList"
+    var shoppingList: [ShoppingItem] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,11 +36,42 @@ class TableViewController: UITableViewController {
             if error != nil {
                 print(error!.localizedDescription)
             } else {
+                guard let snapshot = snapshot else { return }
                 
+                if snapshot.metadata.isFromCache || snapshot.documentChanges.count > 0 {
+                    self.showItems(snapshot: snapshot)
+                }
             }
         })
     }
-
+    
+    func showItems(snapshot: QuerySnapshot){
+        shoppingList.removeAll()
+        for document in snapshot.documents {
+            let data = document.data()
+            let name = data["name"] as! String
+            let quantity = data["quantity"] as! Int
+            let shoppingItem = ShoppingItem(name: name, quantity: quantity, id: document.documentID)
+            
+            shoppingList.append(shoppingItem)
+        }
+        tableView.reloadData()
+    }
+    
+    @IBAction func addItem(_ sender: UIBarButtonItem) {
+        let data: [String: Any] = [
+            "name":"Vitar",
+            "quantity":1
+        ]
+        firestore.collection(shoppingListCollection).addDocument(data: data) { (error) in
+            if error != nil {
+                print(error!.localizedDescription)
+            } else {
+                print("Adicionado com sucesso!")
+            }
+        }
+    }
+    
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
@@ -48,18 +80,20 @@ class TableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return shoppingList.count
     }
 
-    /*
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
 
-        // Configure the cell...
+        let shoppingItem = shoppingList[indexPath.row]
+        cell.textLabel?.text = shoppingItem.name
+        cell.detailTextLabel?.text = shoppingItem.quantity.description
 
         return cell
     }
-    */
+ 
 
     /*
     // Override to support conditional editing of the table view.
@@ -69,17 +103,15 @@ class TableViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+            let shoppingItem = shoppingList[indexPath.row]
+            firestore.collection(shoppingListCollection).document(shoppingItem.id).delete()
+        }
     }
-    */
+ 
 
     /*
     // Override to support rearranging the table view.

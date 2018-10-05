@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FirebaseApp.configure()
         
+        let nc = window?.rootViewController as? UINavigationController
+        
         return true
     }
 
