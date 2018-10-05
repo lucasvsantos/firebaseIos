@@ -23,6 +23,7 @@ class TableViewController: UITableViewController {
     }()
     
     var firestoreListener: ListenerRegistration!
+    let shoppingListCollection = "shoppingList"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +31,13 @@ class TableViewController: UITableViewController {
     }
     
     func loadItems(){
-        firestore 
+        firestoreListener = firestore.collection(shoppingListCollection).order(by: "name").addSnapshotListener(includeMetadataChanges: true, listener: { (snapshot, error) in
+            if error != nil {
+                print(error!.localizedDescription)
+            } else {
+                
+            }
+        })
     }
 
     // MARK: - Table view data source
