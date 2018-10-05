@@ -111,6 +111,18 @@ class TableViewController: UITableViewController {
             firestore.collection(shoppingListCollection).document(shoppingItem.id).delete()
         }
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let shoppingItem = shoppingList[indexPath.row]
+        let randomQuantity = Int(arc4random_uniform(30)+1)
+        let data: [String: Any] = [
+            "name":shoppingItem.name,
+            "quantity": randomQuantity
+        ]
+        
+        firestore.collection(shoppingListCollection).document(shoppingItem.id).updateData(data)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
  
 
     /*
