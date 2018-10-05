@@ -19,8 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FirebaseApp.configure()
         
-        let nc = window?.rootViewController as? UINavigationController
-        
+        if Auth.auth().currentUser != nil {
+            let nc = window?.rootViewController as? UINavigationController
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            
+            let mainVC = storyboard.instantiateViewController(withIdentifier: "TableViewController")
+            nc?.viewControllers = [mainVC]
+        }
         return true
     }
 

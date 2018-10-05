@@ -60,7 +60,7 @@ class TableViewController: UITableViewController {
     
     @IBAction func addItem(_ sender: UIBarButtonItem) {
         let data: [String: Any] = [
-            "name":"Vitar",
+            "name":"Arthur2TDSR",
             "quantity":1
         ]
         firestore.collection(shoppingListCollection).addDocument(data: data) { (error) in
